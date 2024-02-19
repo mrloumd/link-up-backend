@@ -2,7 +2,7 @@ import express from "express";
 import colors from "colors";
 import dotenv from "dotenv";
 import { errorHandler } from "./middlewares/errorMiddleware.js";
-// import userRouter from "./routes/userRoutes.js";
+import userRouter from "./routes/userRoutes.js";
 import connectDB from "./config/db.js";
 
 //access variable in dotenv file
@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Routes
-// app.use("/api/users", userRouter);
+app.use("/api/users", userRouter);
 
 // error Handler
 app.use(errorHandler);
