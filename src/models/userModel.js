@@ -18,6 +18,61 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, "Please add a password"],
     },
+    age: {
+        type: Number,
+        default: null
+    },
+    birthday: {
+        type: Date,
+        default: null
+      // required: [true, "Please add your birthday"],
+    },
+    gender: {
+        type: String,
+        default: null
+      // required: [true, "Please add your gender"],
+    },
+    country: {
+      type: {
+        value: {
+          type: String,
+          default: "ph",
+        },
+        label: {
+          type: String,
+          default: "Philippines",
+        },
+      },
+      default: {},
+    },
+    language: {
+      type: {
+        value: {
+          type: String,
+          default: "english",
+        },
+        label: {
+          type: String,
+          default: "English",
+        },
+      },
+      default: {},
+    },
+    following: {
+        type: Number,
+        default: 0
+    },
+    followers: {
+        type: Number,
+        default: 0
+    },
+    verified: {
+        type: Boolean,
+        default: false
+    },
+    change_password: {
+      type: Object,
+    },
   },
 
   {
