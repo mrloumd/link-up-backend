@@ -9,6 +9,11 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, "Please add your lastname"],
     },
+    username: {
+      type: String,
+      required: [true, "Please add a username"],
+      unique: true,
+    },
     email: {
       type: String,
       required: [true, "Please add a email"],
@@ -19,17 +24,17 @@ const userSchema = mongoose.Schema(
       required: [true, "Please add a password"],
     },
     age: {
-        type: Number,
-        default: null
+      type: Number,
+      default: null,
     },
     birthday: {
-        type: Date,
-        default: null
+      type: Date,
+      default: null,
       // required: [true, "Please add your birthday"],
     },
     gender: {
-        type: String,
-        default: null
+      type: String,
+      default: null,
       // required: [true, "Please add your gender"],
     },
     country: {
@@ -59,16 +64,16 @@ const userSchema = mongoose.Schema(
       default: {},
     },
     following: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
     followers: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
     verified: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
     change_password: {
       type: Object,

@@ -17,10 +17,10 @@ const generateToken = (id) => {
 // @access Public
 const registerUser = asyncHandler(async (req, res) => {
   try {
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, username, email, password } = req.body;
 
-    if (!firstName || !lastName || !email || !password) {
-      sendResponse(
+    if (!firstName || !lastName || !username || !email || !password) {
+      return sendResponse(
         res,
         HttpStatusCode.BAD_REQUEST,
         "Please add all fields",
@@ -33,7 +33,7 @@ const registerUser = asyncHandler(async (req, res) => {
     const userExists = await User.findOne({ email });
 
     if (userExists) {
-      sendResponse(
+      return sendResponse(
         res,
         HttpStatusCode.BAD_REQUEST,
         "User already exists",
@@ -49,6 +49,7 @@ const registerUser = asyncHandler(async (req, res) => {
     const query = {
       firstName,
       lastName,
+      username,
       email,
       password: hashedPassword,
     };
@@ -72,9 +73,9 @@ const registerUser = asyncHandler(async (req, res) => {
 // @access Public
 const loginUser = asyncHandler(async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
-    if (!email || !password) {
+    if (!username || !password) {
       sendResponse(
         res,
         HttpStatusCode.BAD_REQUEST,
@@ -85,15 +86,15 @@ const loginUser = asyncHandler(async (req, res) => {
     }
 
     // Login user
-    // Check for user email
-    const user = await User.findOne({ email });
+    // Check for user username
+    const user = await User.findOne({ username });
 
     if (!user) {
       sendResponse(
         res,
         HttpStatusCode.BAD_REQUEST,
-        "Email is not registered",
-        ["Email not found"],
+        "Username is not registered",
+        ["Username not found"],
         null
       );
     } else if (user && (await bcrypt.compare(password, user.password))) {
@@ -101,7 +102,7 @@ const loginUser = asyncHandler(async (req, res) => {
         _id: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
-        email: user.email,
+        username: user.username,
         token: generateToken(user._id),
       });
     } else {

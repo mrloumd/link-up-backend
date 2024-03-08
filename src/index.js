@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { errorHandler } from "./middlewares/errorMiddleware.js";
 import userRouter from "./routes/userRoutes.js";
 import connectDB from "./config/db.js";
+import cors from "cors";
 
 //access variable in dotenv file
 dotenv.config();
@@ -14,6 +15,7 @@ connectDB();
 
 const app = express();
 
+app.use(cors());
 // middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
