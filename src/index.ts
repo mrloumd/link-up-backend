@@ -1,9 +1,9 @@
 import express from "express";
 import colors from "colors";
 import dotenv from "dotenv";
-import { errorHandler } from "./middlewares/errorMiddleware.js";
-import userRouter from "./routes/userRoutes.js";
-import connectDB from "./config/db.js";
+import { errorHandler } from "./middlewares/errorMiddleware";
+import userRouter from "./routes/userRoutes";
+import connectDB from "./config/db";
 import cors from "cors";
 
 //access variable in dotenv file

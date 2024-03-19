@@ -1,5 +1,32 @@
-import mongoose from "mongoose";
-const userSchema = mongoose.Schema(
+import mongoose, { Schema, Document } from "mongoose";
+
+// Define the interface for the User document
+interface UserDocument extends Document {
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  password: string;
+  age: number | null;
+  birthday: Date | null;
+  gender: string | null;
+  country: { value: string; label: string };
+  language: { value: string; label: string };
+  upload: {
+    _id: Schema.Types.ObjectId;
+    file_name: string;
+    file_path: string;
+  } | null;
+  following: number;
+  followers: number;
+  verified: boolean;
+  change_password:
+    | { password: Schema.Types.ObjectId; updated_at: Date }[]
+    | null;
+}
+
+// Define the user schema
+const userSchema = new Schema<UserDocument>(
   {
     firstName: {
       type: String,
@@ -16,7 +43,7 @@ const userSchema = mongoose.Schema(
     },
     email: {
       type: String,
-      required: [true, "Please add a email"],
+      required: [true, "Please add an email"],
       unique: true,
     },
     password: {
@@ -63,6 +90,20 @@ const userSchema = mongoose.Schema(
       },
       default: {},
     },
+    upload: {
+      type: {
+        _id: {
+          type: Schema.Types.ObjectId,
+        },
+        file_name: {
+          type: String,
+        },
+        file_path: {
+          type: String,
+        },
+      },
+      default: null,
+    },
     following: {
       type: Number,
       default: 0,
@@ -76,13 +117,24 @@ const userSchema = mongoose.Schema(
       default: false,
     },
     change_password: {
-      type: Object,
+      type: [
+        {
+          password: {
+            type: Schema.Types.ObjectId,
+          },
+          updated_at: {
+            type: Date,
+          },
+        },
+      ],
+      default: null,
     },
   },
-
   {
     timestamps: true,
   }
 );
 
-export default mongoose.model("User", userSchema);
+// Define and export the User model
+const UserModel = mongoose.model<UserDocument>("User", userSchema);
+export default UserModel;
