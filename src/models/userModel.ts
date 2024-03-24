@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-// Define the interface for the User document
-interface UserDocument extends Document {
+//** Define the interface for the User document */
+export interface UserDocument extends Document {
   firstName: string;
   lastName: string;
   username: string;
@@ -12,11 +12,11 @@ interface UserDocument extends Document {
   gender: string | null;
   country: { value: string; label: string };
   language: { value: string; label: string };
-  upload: {
+  uploads: {
     _id: Schema.Types.ObjectId;
     file_name: string;
     file_path: string;
-  } | null;
+  }[];
   following: number;
   followers: number;
   verified: boolean;
@@ -25,7 +25,7 @@ interface UserDocument extends Document {
     | null;
 }
 
-// Define the user schema
+//** Define the user schema */
 const userSchema = new Schema<UserDocument>(
   {
     firstName: {
@@ -90,19 +90,21 @@ const userSchema = new Schema<UserDocument>(
       },
       default: {},
     },
-    upload: {
-      type: {
-        _id: {
-          type: Schema.Types.ObjectId,
+    uploads: {
+      type: [
+        {
+          _id: {
+            type: Schema.Types.ObjectId,
+          },
+          file_name: {
+            type: String,
+          },
+          file_path: {
+            type: String,
+          },
         },
-        file_name: {
-          type: String,
-        },
-        file_path: {
-          type: String,
-        },
-      },
-      default: null,
+      ],
+      default: [],
     },
     following: {
       type: Number,
@@ -135,6 +137,5 @@ const userSchema = new Schema<UserDocument>(
   }
 );
 
-// Define and export the User model
 const UserModel = mongoose.model<UserDocument>("User", userSchema);
 export default UserModel;

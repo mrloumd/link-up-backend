@@ -3,27 +3,29 @@ import colors from "colors";
 import dotenv from "dotenv";
 import { errorHandler } from "./middlewares/errorMiddleware";
 import userRouter from "./routes/userRoutes";
+import postRouter from "./routes/postRoutes";
 import connectDB from "./config/db";
 import cors from "cors";
 
-//access variable in dotenv file
+//** access variable in dotenv file */
 dotenv.config();
 const port = process.env.PORT || 5000;
 
-//db run fucntion
+//** db run fucntion */
 connectDB();
 
 const app = express();
 
 app.use(cors());
-// middleware
+//** middleware */
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Routes
+//** Routes */
 app.use("/api/users", userRouter);
+app.use("/api/post", postRouter);
 
-// error Handler
+//** error Handler */
 app.use(errorHandler);
 
 app.listen(port, () => console.log(`Server started on port ${port}`));

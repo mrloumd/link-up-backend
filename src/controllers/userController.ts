@@ -2,25 +2,25 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import asyncHandler from "express-async-handler";
-import User from "../models/userModel";
+import User, { UserDocument } from "../models/userModel";
 import { response } from "../api/responseHelper";
 import { HttpStatusCode } from "../utils/HttpStatusCode";
 
-// Define a custom interface to extend the Request type
+//** Define a custom interface to extend the Request type */
 interface CustomRequest extends Request {
   user?: any; // Define the user property
 }
 
-//Generate a Token JWT
+//** Generate a Token JWT */
 const generateToken = (id: string) => {
   return jwt.sign({ id }, process.env.JWT_SECRET!, {
     expiresIn: "30d",
   });
 };
 
-// @desc Register new user
-// @route POST /api/user
-// @access Public
+//** @desc Register new user */
+//** @route POST /api/user */
+//** @access Public */
 const registerUser = asyncHandler(async (req: CustomRequest, res: Response) => {
   try {
     const { firstName, lastName, username, email, password } = req.body;
@@ -35,7 +35,7 @@ const registerUser = asyncHandler(async (req: CustomRequest, res: Response) => {
       );
     }
 
-    //Check if user exists
+    //** Check if user exists */
     const userExists = await User.findOne({ email });
 
     if (userExists) {
@@ -48,7 +48,7 @@ const registerUser = asyncHandler(async (req: CustomRequest, res: Response) => {
       );
     }
 
-    //Hash password
+    //** Hash password */
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -60,7 +60,7 @@ const registerUser = asyncHandler(async (req: CustomRequest, res: Response) => {
       password: hashedPassword,
     };
 
-    //Create user
+    //** Create user */
     const user = await User.create(query);
 
     if (user) {
@@ -74,9 +74,9 @@ const registerUser = asyncHandler(async (req: CustomRequest, res: Response) => {
   }
 });
 
-// @desc Authenticate a user
-// @route POST /api/user/login
-// @access Public
+//** @desc Authenticate a user */
+//** @route POST /api/user/login */
+//** @access Public */
 const loginUser = asyncHandler(async (req: CustomRequest, res: Response) => {
   try {
     const { username, password } = req.body;
@@ -91,7 +91,7 @@ const loginUser = asyncHandler(async (req: CustomRequest, res: Response) => {
       );
     }
 
-    // Find user by username
+    //** Find user by username */
     const user = await User.findOne({ username });
 
     if (!user) {
@@ -104,7 +104,7 @@ const loginUser = asyncHandler(async (req: CustomRequest, res: Response) => {
       );
     }
 
-    // Check if passwords match
+    //** Check if passwords match */
     if (await bcrypt.compare(password, user.password)) {
       response(res, HttpStatusCode.OK, "Login successful", [], {
         _id: user.id,
@@ -128,9 +128,9 @@ const loginUser = asyncHandler(async (req: CustomRequest, res: Response) => {
   }
 });
 
-// @desc Get user data
-// @route GET /api/user/me
-// @access Private
+//** @desc Get user data */
+//** @route GET /api/user/me */
+//** @access Private */
 const getMe = asyncHandler(async (req: CustomRequest, res: Response) => {
   try {
     if (!req.user) {

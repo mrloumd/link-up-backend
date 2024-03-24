@@ -1,26 +1,26 @@
 import { Response } from "express";
 
-// Define the types for the parameters in your functions
+//** Define the types for the parameters in functions */
 type StatusCode = number;
 type Message = string;
 type Errors = string[];
 type Data = Record<string, any> | null;
 
-// Define the types for your response and dataResponse functions
+//** Define the types for your response and dataResponse functions */
 const dataResponse = (
   statusCode: StatusCode,
   message: Message = "",
   errors: Errors = [],
   data: Data = null
 ) => {
-  // Create a new object to avoid spreading null
+  //** Create a new object to avoid spreading null */
   const responseData = {
     statusCode,
     message,
     errors,
   };
 
-  // Spread data only if it's not null
+  //** Spread data only if it's not null */
   if (data !== null) {
     Object.assign(responseData, data);
   }

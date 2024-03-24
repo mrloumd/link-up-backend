@@ -1,24 +1,43 @@
-import mongoose from "mongoose";
-const { ObjectId } = mongoose.Schema.Types;
-const userSchema = new mongoose.Schema(
+import mongoose, { Schema, Document } from "mongoose";
+
+//** Define the interface for the Post document */
+export interface PostDocument extends Document {
+  description: string;
+  uploads: {
+    _id: Schema.Types.ObjectId;
+    file_name: string;
+    file_path: string;
+  }[];
+  likes: number;
+  comments: number;
+  shares: number;
+  privacy: { value: string; label: string };
+  archives: boolean;
+  user_id: Schema.Types.ObjectId;
+}
+
+//** Define the post schema */
+const postSchema = new Schema<PostDocument>(
   {
     description: {
       type: String,
       required: [true, "Please add a description"],
     },
     uploads: {
-      type: {
-        _id: {
-          type: ObjectId,
+      type: [
+        {
+          _id: {
+            type: Schema.Types.ObjectId,
+          },
+          file_name: {
+            type: String,
+          },
+          file_path: {
+            type: String,
+          },
         },
-        file_name: {
-          type: String,
-        },
-        file_path: {
-          type: String,
-        },
-      },
-      default: null,
+      ],
+      default: [],
     },
     likes: {
       type: Number,
@@ -49,11 +68,16 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
+    },
   },
-
   {
     timestamps: true,
   }
 );
 
-export default mongoose.model("User", userSchema);
+const PostModel = mongoose.model<PostDocument>("Post", postSchema);
+export default PostModel;

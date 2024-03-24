@@ -10,11 +10,11 @@ const errorHandler = (
 
   res.status(statusCode);
 
-  //respond with json that pass a message
+  //** respond with json that pass a message */
   res.json({
     message: err.message,
-    // stack trace for additional information in development
-    // null in production
+    //** stack trace for additional information in development */
+    //**  null in production */
     stack: process.env.NODE_ENV === "production" ? null : err.stack,
   });
 };
