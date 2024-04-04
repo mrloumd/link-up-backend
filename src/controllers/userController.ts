@@ -19,7 +19,7 @@ const generateToken = (id: string) => {
 };
 
 //** @desc Register new user */
-//** @route POST /api/user */
+//** @route User /api/user */
 //** @access Public */
 const registerUser = asyncHandler(async (req: CustomRequest, res: Response) => {
   try {
@@ -64,7 +64,10 @@ const registerUser = asyncHandler(async (req: CustomRequest, res: Response) => {
     const user = await User.create(query);
 
     if (user) {
-      response(res, HttpStatusCode.CREATED, "User Registered", [], { user });
+      response(res, HttpStatusCode.CREATED, "User Registered", [], {
+        token: generateToken(user.id),
+        data: user,
+      });
     } else {
       response(res, HttpStatusCode.BAD_REQUEST, "", ["Error"], null);
     }
@@ -75,7 +78,7 @@ const registerUser = asyncHandler(async (req: CustomRequest, res: Response) => {
 });
 
 //** @desc Authenticate a user */
-//** @route POST /api/user/login */
+//** @route User /api/user/login */
 //** @access Public */
 const loginUser = asyncHandler(async (req: CustomRequest, res: Response) => {
   try {
@@ -107,11 +110,13 @@ const loginUser = asyncHandler(async (req: CustomRequest, res: Response) => {
     //** Check if passwords match */
     if (await bcrypt.compare(password, user.password)) {
       response(res, HttpStatusCode.OK, "Login successful", [], {
-        _id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        username: user.username,
         token: generateToken(user.id),
+        data: {
+          _id: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          username: user.username,
+        },
       });
     } else {
       response(
@@ -156,4 +161,58 @@ const getMe = asyncHandler(async (req: CustomRequest, res: Response) => {
   }
 });
 
-export { registerUser, loginUser, getMe };
+// @desc    Update user
+// @route   PUT /api/user/:id
+// @access  Private
+const updateUser = asyncHandler(async (req: CustomRequest, res: Response) => {
+  try {
+    const user: UserDocument | null = await User.findById(req.params.id);
+
+    // console.log("REQ", req);
+    // console.log("user", user);
+
+    if (!user) {
+      return response(
+        res,
+        HttpStatusCode.BAD_REQUEST,
+        "User not found",
+        ["User not found"],
+        null
+      );
+    }
+
+    // Check for user
+    if (!req.user) {
+      return response(
+        res,
+        HttpStatusCode.BAD_REQUEST,
+        "User not found",
+        ["User not found"],
+        null
+      );
+    }
+
+    // Make sure the logged in user matches the user user
+    if (user._id.toString() !== req.user.id) {
+      res.status(401);
+      throw new Error("User not authorized");
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+
+    // Userman request
+    // res.status(200).json({ message: `Update user user ${req.params.id}` });
+    if (updatedUser) {
+      response(res, HttpStatusCode.CREATED, "success", [], { updatedUser });
+    } else {
+      response(res, HttpStatusCode.BAD_REQUEST, "", ["Error"], null);
+    }
+  } catch (error) {
+    console.error(error);
+    response(res, HttpStatusCode.SERVER_ERROR, "", ["Error"], null);
+  }
+});
+
+export { registerUser, loginUser, getMe, updateUser };

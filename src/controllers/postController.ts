@@ -153,7 +153,7 @@ const updatePost = asyncHandler(async (req: CustomRequest, res: Response) => {
       );
     }
 
-    // Make sure the logged in user matches the post user
+    // Make sure the logged in user matches the post user_id
     if (post.user_id.toString() !== req.user.id) {
       res.status(401);
       throw new Error("User not authorized");

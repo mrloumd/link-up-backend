@@ -12,11 +12,16 @@ export interface UserDocument extends Document {
   gender: string | null;
   country: { value: string; label: string };
   language: { value: string; label: string };
-  uploads: {
+  profile_photo: {
     _id: Schema.Types.ObjectId;
     file_name: string;
     file_path: string;
-  }[];
+  };
+  background_photo: {
+    _id: Schema.Types.ObjectId;
+    file_name: string;
+    file_path: string;
+  };
   following: number;
   followers: number;
   verified: boolean;
@@ -90,21 +95,33 @@ const userSchema = new Schema<UserDocument>(
       },
       default: {},
     },
-    uploads: {
-      type: [
-        {
-          _id: {
-            type: Schema.Types.ObjectId,
-          },
-          file_name: {
-            type: String,
-          },
-          file_path: {
-            type: String,
-          },
+    profile_photo: {
+      type: {
+        _id: {
+          type: Schema.Types.ObjectId,
         },
-      ],
-      default: [],
+        file_name: {
+          type: String,
+        },
+        file_path: {
+          type: String,
+        },
+      },
+      default: null,
+    },
+    background_photo: {
+      type: {
+        _id: {
+          type: Schema.Types.ObjectId,
+        },
+        file_name: {
+          type: String,
+        },
+        file_path: {
+          type: String,
+        },
+      },
+      default: null,
     },
     following: {
       type: Number,

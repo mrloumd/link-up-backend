@@ -21,6 +21,13 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+//*******************************************
+// * Function to serve all static files
+// *  inside public directory.
+// ******************************************
+app.use(express.static("src"));
+app.use("uploads", express.static("uploads"));
+
 //** Routes */
 app.use("/api/users", userRouter);
 app.use("/api/post", postRouter);
